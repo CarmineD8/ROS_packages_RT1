@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include "turtlesim/Pose.h"
 #include "geometry_msgs/Twist.h"
+#include "turtlesim/Spawn.h"
 
 ros::Publisher pub;
 
@@ -17,7 +18,12 @@ int main(int argc, char **argv)
 {
    ros::init(argc, argv, "turtlebot_controller");
    ros::NodeHandle n;
-
+   ros::ServiceClient client = n.serviceClient<turtlesim::Spawn>("/spawn");
+   turtlesim::Spawn srv;
+   srv.request.x = 1.0;
+   srv.request.y = 1.0;
+   client.call(srv);
+   
    pub = n.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 1000);
    ros::Subscriber sub = n.subscribe("/turtle1/pose", 1000, positionCallback);
 
