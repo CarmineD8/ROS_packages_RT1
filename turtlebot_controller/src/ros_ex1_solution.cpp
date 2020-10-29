@@ -14,7 +14,7 @@ void subscriberCallback(const turtlesim::Pose::ConstPtr& pose_msg)
 {
    geometry_msgs::Twist msg_sent;
 
-   if ((pose_msg->x >= 1.5)&(pose_msg->x<=9.0))
+   if ((pose_msg->x >= 2.0)&(pose_msg->x<=9.0))
     {
     msg_sent.linear.x = 1.0;
     msg_sent.angular.z=0.0;
@@ -26,7 +26,7 @@ void subscriberCallback(const turtlesim::Pose::ConstPtr& pose_msg)
     msg_sent.angular.z=0.1;
     }
 
-   else if ((pose_msg->x <1.5))
+   else if ((pose_msg->x <2.0))
     {
     msg_sent.linear.x = 0.1;
     msg_sent.angular.z=-0.1;
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
   std_srvs::Empty srv3;
   turtlesim::TeleportAbsolute srv4;
   
-  srv4.request.x=1.5;
+  srv4.request.x=2.0;
   srv4.request.y=1.0;
   srv4.request.theta=0.0;
 
