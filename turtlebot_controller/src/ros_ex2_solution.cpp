@@ -7,29 +7,34 @@
 #include <iostream>
 #include "std_srvs/Empty.h"
 #include "turtlesim/TeleportAbsolute.h"
+#include "my_srv/Harmonic.h"
 
 ros::Publisher chatter_pub;
+ros::ServiceClient client5;
 
 void subscriberCallback(const turtlesim::Pose::ConstPtr& pose_msg)
 {
    geometry_msgs::Twist msg_sent;
+   my_srv::Harmonic rec_vel;
 
    if ((pose_msg->x >= 2.0)&(pose_msg->x<=9.0))
     {
-    msg_sent.linear.x = 1.0;
-    msg_sent.angular.z = 0.0;
+	rec_vel.request.pos = pose_msg->x;
+	client5.call(rec_vel);
+    msg_sent.linear.x = rec_vel.response.vel;
+    msg_sent.angular.z=0.0;
     }
 
     else if ((pose_msg->x > 9.0))
     {
     msg_sent.linear.x = 0.1;
-    msg_sent.angular.z = 0.1;
+    msg_sent.angular.z=0.1;
     }
 
    else if ((pose_msg->x <2.0))
     {
     msg_sent.linear.x = 0.1;
-    msg_sent.angular.z = -0.1;
+    msg_sent.angular.z=-0.1;
     }
 
     chatter_pub.publish(msg_sent);
@@ -51,6 +56,8 @@ int main(int argc, char **argv)
 
   ros::ServiceClient client3 = n.serviceClient<std_srvs::Empty>("/clear");
   ros::ServiceClient client4 = n.serviceClient<turtlesim::TeleportAbsolute>("/rt_turtle/teleport_absolute");
+  
+  client5 = n.serviceClient<my_srv::Harmonic>("/harmonic");
 
   
   turtlesim::Kill srv1;

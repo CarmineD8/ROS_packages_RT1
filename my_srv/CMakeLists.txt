@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(turtlebot_controller)
+project(my_srv)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -8,13 +8,9 @@ project(turtlebot_controller)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  roscpp
-  rospy
-  std_msgs
-  turtlesim
   message_generation
-  my_srv
+  roscpp
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -51,18 +47,19 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-   FILES
-   Vel.msg
+# add_message_files(
+#   FILES
+#   Message1.msg
 #   Message2.msg
- )
+# )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
+ add_service_files(
+   FILES
+   Velocity.srv
+   Harmonic.srv
 #   Service2.srv
-# )
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -72,7 +69,7 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
+ generate_messages(
    DEPENDENCIES
    std_msgs
  )
@@ -108,8 +105,8 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES turtlebot_controller
-#  CATKIN_DEPENDS geometry_msgs roscpp rospy std_msgs turtlesim
+#  LIBRARIES my_srv
+#  CATKIN_DEPENDS message_generation roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -126,20 +123,19 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/turtlebot_controller.cpp
+#   src/${PROJECT_NAME}/my_srv.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(turtlebot_controller src/turtlebot_controller.cpp)
- add_executable(exercise1 src/ros_ex1_solution.cpp)
- add_executable(exercise2 src/ros_ex2_solution.cpp)
+ add_executable(velocity_server src/velocity_server.cpp)
+ add_executable(harmonic_server src/harmonic_server.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -149,19 +145,15 @@ include_directories(
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(turtlebot_controller ${catkin_EXPORTED_TARGETS})
-add_dependencies(exercise2 ${catkin_EXPORTED_TARGETS})
+add_dependencies(velocity_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(harmonic_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(turtlebot_controller
+ target_link_libraries(velocity_server
    ${catkin_LIBRARIES}
  )
 
-target_link_libraries(exercise1
-   ${catkin_LIBRARIES}
- )
-
-target_link_libraries(exercise2
+target_link_libraries(harmonic_server
    ${catkin_LIBRARIES}
  )
 
@@ -174,10 +166,10 @@ target_link_libraries(exercise2
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
- install(PROGRAMS
-   scripts/client.py
-   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
- )
+# install(PROGRAMS
+#   scripts/my_python_script
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 ## Mark executables and/or libraries for installation
 # install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
@@ -205,7 +197,7 @@ target_link_libraries(exercise2
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_turtlebot_controller.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_my_srv.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
